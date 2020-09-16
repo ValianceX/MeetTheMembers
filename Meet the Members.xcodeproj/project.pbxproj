@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		EB469F222512B77600950637 /* ResultsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = EB469F212512B77600950637 /* ResultsViewController.swift */; };
 		EB97C62E250DC3F10030AB87 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = EB97C62D250DC3F10030AB87 /* AppDelegate.swift */; };
 		EB97C630250DC3F10030AB87 /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = EB97C62F250DC3F10030AB87 /* SceneDelegate.swift */; };
 		EB97C632250DC3F10030AB87 /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = EB97C631250DC3F10030AB87 /* ViewController.swift */; };
@@ -38,6 +39,7 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		EB469F212512B77600950637 /* ResultsViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ResultsViewController.swift; sourceTree = "<group>"; };
 		EB97C62A250DC3F10030AB87 /* Meet the Members.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Meet the Members.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		EB97C62D250DC3F10030AB87 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		EB97C62F250DC3F10030AB87 /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
@@ -110,6 +112,7 @@
 				EB97C661250E9FED0030AB87 /* Constants.swift */,
 				EB97C631250DC3F10030AB87 /* ViewController.swift */,
 				EB97C65D250E90AD0030AB87 /* GameScreenViewController.swift */,
+				EB469F212512B77600950637 /* ResultsViewController.swift */,
 				EB97C65F250E91690030AB87 /* StatisticsViewController.swift */,
 				EB97C633250DC3F10030AB87 /* Main.storyboard */,
 				EB97C636250DC3F30030AB87 /* Assets.xcassets */,
@@ -271,6 +274,7 @@
 				EB97C632250DC3F10030AB87 /* ViewController.swift in Sources */,
 				EB97C660250E91690030AB87 /* StatisticsViewController.swift in Sources */,
 				EB97C62E250DC3F10030AB87 /* AppDelegate.swift in Sources */,
+				EB469F222512B77600950637 /* ResultsViewController.swift in Sources */,
 				EB97C65E250E90AD0030AB87 /* GameScreenViewController.swift in Sources */,
 				EB97C630250DC3F10030AB87 /* SceneDelegate.swift in Sources */,
 				EB97C662250E9FED0030AB87 /* Constants.swift in Sources */,

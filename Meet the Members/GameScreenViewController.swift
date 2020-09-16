@@ -22,6 +22,24 @@ class GameScreenViewController: UIViewController {
     
     //Timer stuff
     var time = 5 //5 seconds
+    var isPaused = false
+    var timer: Timer!
+    
+    func startTimer() {
+        timer = Timer.scheduledTimer(timeInterval: 1.0, target: self, selector: #selector(updateTime), userInfo: nil, repeats: true)
+    }
+    
+    func pauseGame() {
+        isPaused = !isPaused
+        if isPaused {
+            timer.invalidate()
+            pauseButton.setTitle("Play", for: .normal)
+            
+        } else {
+            startTimer()
+            pauseButton.setTitle("Pause", for: .normal)
+        }
+    }
 
     
     //user defined variables
@@ -35,6 +53,7 @@ class GameScreenViewController: UIViewController {
     var questionNumber = 0
     var lastThreeNames: [String] = ["None", "None", "None"]
     var longestStreak = 0
+    var currentlyPlaying = true
     
     
     func shuffleNames() -> [String] {
@@ -68,35 +87,37 @@ class GameScreenViewController: UIViewController {
             streak += 1
             if streak > longestStreak {longestStreak = streak}
             setScoreLabel(score)
+            setLastThreeNames(newName: currentlyDisplaying)
         } else {
             if streak > longestStreak {longestStreak = streak}
             streak = 0
+            setLastThreeNames(newName: currentlyDisplaying)
         }
     }
     
     func nextQuestion(question: Int) {
         time = 5
-        currentlyDisplaying = gameNameList[question]
-        //print stuff for debugging
-        print("Question: " + String(questionNumber))
-        print(currentlyDisplaying)
-        print("Longset streak: " + String(longestStreak))
-        print("Current streak: " + String(streak))
-        
-        pictureView.image = Constants.getImageFor(name: currentlyDisplaying)
-        setButtonOptions(currentlyDisplaying)
-        setScoreLabel(score)
-        setLastThreeNames(newName: currentlyDisplaying)
-        
         //STILL NEED TO HANDLE THE GAME ENDING HERE!!!!!
-    }
-    
-    func startTimer() {
-        time = 5
-        Timer.scheduledTimer(timeInterval: 1.0, target: self, selector: #selector(updateTime), userInfo: nil, repeats: true)
+        if question >= gameNameList.count {
+            currentlyPlaying = false
+            performSegue(withIdentifier: "toResultsScreen", sender: self)
+        } else {
+            currentlyDisplaying = gameNameList[question]
+            //print stuff for debugging
+            print("Question: " + String(questionNumber))
+            print(currentlyDisplaying)
+            print("Longset streak: " + String(longestStreak))
+            print("Current streak: " + String(streak))
+            
+            pictureView.image = Constants.getImageFor(name: currentlyDisplaying)
+            setButtonOptions(currentlyDisplaying)
+            setScoreLabel(score)
+        }
+        
     }
     
     func startGame() {
+        currentlyPlaying = true
         gameNameList = shuffleNames()
         lastThreeNames = ["None", "None", "None"]
         longestStreak = 0
@@ -140,11 +161,22 @@ class GameScreenViewController: UIViewController {
             controller.lastThreeNamesArray = lastThreeNames
             controller.longestStreak = longestStreak
         }
+        
+        if segue.identifier == "toResultsScreen" {
+            let controller = segue.destination as! ResultsViewController
+            controller.finalScore = score
+            controller.longestStreak = longestStreak
+        }
     }
     
     @IBAction func onStatButton(_ sender: Any) {
         performSegue(withIdentifier: "toStatisticsScreen", sender: self)
+        pauseGame()
     }
+    @IBAction func onPauseButton(_ sender: Any) {
+        pauseGame()
+    }
+    
     
     @IBAction func onButton1(_ sender: Any) {
         checkButtonAnswer(answerChoice: optionButton1.title(for: .normal) ?? "No Name")

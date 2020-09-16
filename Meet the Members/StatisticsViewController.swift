@@ -15,6 +15,7 @@ class StatisticsViewController: UIViewController {
     
     var lastThreeNamesArray: [String] = []
     var longestStreak: Int = 0
+    var playing: Bool!
     
     override func viewDidLoad() {
         super.viewDidLoad()
