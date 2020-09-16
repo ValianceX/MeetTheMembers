@@ -8,13 +8,23 @@
 
 import UIKit
 
-class ViewController: UIViewController {
+class StartViewController: UIViewController {
 
+    @IBOutlet weak var startButton: UIButton!
+    @IBOutlet weak var gameTitleTest: UILabel!
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         // Do any additional setup after loading the view.
+        
+        gameTitleTest.text = "Match\nthe\nMembers!"
+    }
+    
+    @IBAction func onStartButton(_ sender: Any) {
+        performSegue(withIdentifier: "gameStartSegue", sender: self)
     }
 
+    
 
 }
 
