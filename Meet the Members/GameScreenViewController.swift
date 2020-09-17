@@ -25,9 +25,11 @@ class GameScreenViewController: UIViewController {
     var isPaused = false
     var timer: Timer!
     
+    
     func startTimer() {
         timer = Timer.scheduledTimer(timeInterval: 1.0, target: self, selector: #selector(updateTime), userInfo: nil, repeats: true)
     }
+    
     
     func pauseGame() {
         isPaused = !isPaused
@@ -40,7 +42,7 @@ class GameScreenViewController: UIViewController {
             pauseButton.setTitle("Pause", for: .normal)
         }
     }
-
+ 
     
     //user defined variables
     let nameList = Constants.names //names in the original order
@@ -53,7 +55,7 @@ class GameScreenViewController: UIViewController {
     var questionNumber = 0
     var lastThreeNames: [String] = ["None", "None", "None"]
     var longestStreak = 0
-    var currentlyPlaying = true
+    var currentlyPlaying = false
     
     
     func shuffleNames() -> [String] {
@@ -81,27 +83,36 @@ class GameScreenViewController: UIViewController {
         lastThreeNames = [newName, lastThreeNames[0], lastThreeNames[1]]
     }
     
-    func checkButtonAnswer(answerChoice: String) {
+    func checkButtonAnswer(answerChoice: String) -> Bool{
+        timer.invalidate()
+        time = 5
         if answerChoice == currentlyDisplaying {
             score += 1
             streak += 1
             if streak > longestStreak {longestStreak = streak}
             setScoreLabel(score)
             setLastThreeNames(newName: currentlyDisplaying)
+            return true
         } else {
             if streak > longestStreak {longestStreak = streak}
             streak = 0
             setLastThreeNames(newName: currentlyDisplaying)
+            return false
         }
     }
     
     func nextQuestion(question: Int) {
         time = 5
+        setButtonColors()
+        questionNumber = question + 1
         //STILL NEED TO HANDLE THE GAME ENDING HERE!!!!!
         if question >= gameNameList.count {
+            timer.invalidate()
             currentlyPlaying = false
+            print("Game Ended")
             performSegue(withIdentifier: "toResultsScreen", sender: self)
         } else {
+            startTimer()
             currentlyDisplaying = gameNameList[question]
             //print stuff for debugging
             print("Question: " + String(questionNumber))
@@ -115,22 +126,45 @@ class GameScreenViewController: UIViewController {
         }
         
     }
-    
+
     func startGame() {
+        print("New game started with startGame()")
+        score = 0
         currentlyPlaying = true
+        questionNumber = 0
         gameNameList = shuffleNames()
         lastThreeNames = ["None", "None", "None"]
         longestStreak = 0
-        nextQuestion(question: 0)
-        startTimer()
+        nextQuestion(question: questionNumber)
+        //startTimer()
     }
     
+    
+    func setButtonColors() {
+        optionButton1.backgroundColor = .orange
+        optionButton2.backgroundColor = .purple
+        optionButton3.backgroundColor = .yellow
+        optionButton4.backgroundColor = .cyan
+    }
     
     override func viewDidLoad() {
         super.viewDidLoad()
         
         // Do any additional setup after loading the view.
+        print("Running viewDidLoad")
         startGame()
+    }
+    
+    override func viewDidAppear(_ animated: Bool) {
+        print("Running viewDidAppear")
+        if currentlyPlaying == false {
+            print("New game started")
+            startGame()
+        }
+        if isPaused {
+            print("Unpaused")
+            pauseGame()
+        }
     }
     
     @objc func updateTime(){
@@ -140,7 +174,6 @@ class GameScreenViewController: UIViewController {
         }
         if time == -1 {
             checkButtonAnswer(answerChoice: "No Answer Given")
-            questionNumber += 1
             nextQuestion(question: questionNumber)
         }
         
@@ -155,6 +188,7 @@ class GameScreenViewController: UIViewController {
         // Pass the selected object to the new view controller.
     }
     */
+
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
         if segue.identifier == "toStatisticsScreen" {
             let controller = segue.destination as! StatisticsViewController
@@ -166,40 +200,80 @@ class GameScreenViewController: UIViewController {
             let controller = segue.destination as! ResultsViewController
             controller.finalScore = score
             controller.longestStreak = longestStreak
+            controller.totalQuestions = gameNameList.count
         }
     }
     
     @IBAction func onStatButton(_ sender: Any) {
-        performSegue(withIdentifier: "toStatisticsScreen", sender: self)
         pauseGame()
+        performSegue(withIdentifier: "toStatisticsScreen", sender: self)
     }
+    
     @IBAction func onPauseButton(_ sender: Any) {
         pauseGame()
     }
     
+    var correct = false
+    
+    func animateCorrect(correctButton:UIButton) {
+        UIView.animate(withDuration: 1,
+                       delay: 0.0,
+                       options: .curveEaseOut,
+                       animations: {
+                       correctButton.backgroundColor = .green
+                        //self.optionButton1.frame.size.width = 200
+        }, completion: { _ in
+            //correctButton.backgroundColor = .orange
+            //self.questionNumber += 1
+            self.nextQuestion(question: self.questionNumber)
+        })
+        
+    }
+    
+    
     
     @IBAction func onButton1(_ sender: Any) {
-        checkButtonAnswer(answerChoice: optionButton1.title(for: .normal) ?? "No Name")
-        questionNumber += 1
-        nextQuestion(question: questionNumber)
+        correct = checkButtonAnswer(answerChoice: optionButton1.title(for: .normal) ?? "No Name")
+        
+        if correct {
+            animateCorrect(correctButton: optionButton1)
+        } else {
+            //self.questionNumber += 1
+            self.nextQuestion(question: questionNumber)
+        }
     }
     
     @IBAction func onButton2(_ sender: Any) {
-        checkButtonAnswer(answerChoice: optionButton2.title(for: .normal) ?? "No Name")
-        questionNumber += 1
-        nextQuestion(question: questionNumber)
+        correct = checkButtonAnswer(answerChoice: optionButton2.title(for: .normal) ?? "No Name")
+        
+        if correct {
+            animateCorrect(correctButton: optionButton2)
+        } else {
+            //self.questionNumber += 1
+            self.nextQuestion(question: self.questionNumber)
+        }
     }
     
     @IBAction func onButton3(_ sender: Any) {
-        checkButtonAnswer(answerChoice: optionButton3.title(for: .normal) ?? "No Name")
-        questionNumber += 1
-        nextQuestion(question: questionNumber)
+        correct = checkButtonAnswer(answerChoice: optionButton3.title(for: .normal) ?? "No Name")
+        
+        if correct {
+            animateCorrect(correctButton: optionButton3)
+        } else {
+            //self.questionNumber += 1
+            self.nextQuestion(question: self.questionNumber)
+        }
     }
     
     @IBAction func onButton4(_ sender: Any) {
-        checkButtonAnswer(answerChoice: optionButton4.title(for: .normal) ?? "No Name")
-        questionNumber += 1
-        nextQuestion(question: questionNumber)
+        correct = checkButtonAnswer(answerChoice: optionButton4.title(for: .normal) ?? "No Name")
+        
+        if correct {
+            animateCorrect(correctButton: optionButton4)
+        } else {
+            //self.questionNumber += 1
+            self.nextQuestion(question: self.questionNumber)
+        }
     }
     
 }

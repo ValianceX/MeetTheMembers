@@ -42,7 +42,7 @@
                                 </connections>
                             </button>
                         </subviews>
-                        <color key="backgroundColor" red="0.62425349368758898" green="0.80553965277888273" blue="0.92133218050003052" alpha="1" colorSpace="custom" customColorSpace="displayP3"/>
+                        <color key="backgroundColor" red="0.37647058823529411" green="0.74901960784313726" blue="1" alpha="1" colorSpace="custom" customColorSpace="displayP3"/>
                         <constraints>
                             <constraint firstItem="6Tk-OE-BBY" firstAttribute="trailing" secondItem="ZHj-VB-uDu" secondAttribute="trailing" constant="94" id="D1D-bC-AXz"/>
                             <constraint firstItem="aVs-bX-CDc" firstAttribute="centerX" secondItem="8bC-Xf-vdC" secondAttribute="centerX" id="E3a-9W-YCS"/>
@@ -281,7 +281,7 @@
                         <outlet property="statisticsButton" destination="tdW-eH-OnF" id="RdS-eW-jGZ"/>
                         <outlet property="timerLabel" destination="fYC-se-uH4" id="uRZ-tv-OOD"/>
                         <segue destination="36D-wT-Q7v" kind="showDetail" identifier="toStatisticsScreen" id="QYg-fr-Ckp"/>
-                        <segue destination="n14-dg-p2p" kind="show" identifier="toResultsScreen" id="OtV-kc-1nX"/>
+                        <segue destination="n14-dg-p2p" kind="showDetail" identifier="toResultsScreen" id="OtV-kc-1nX"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="xWo-OW-3RW" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
@@ -291,9 +291,9 @@
         <!--Results View Controller-->
         <scene sceneID="r7A-HC-3pU">
             <objects>
-                <viewController id="n14-dg-p2p" customClass="ResultsViewController" customModule="Meet_the_Members" customModuleProvider="target" sceneMemberID="viewController">
+                <viewController modalPresentationStyle="fullScreen" id="n14-dg-p2p" customClass="ResultsViewController" customModule="Meet_the_Members" customModuleProvider="target" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleToFill" id="eVo-on-ibQ">
-                        <rect key="frame" x="0.0" y="0.0" width="414" height="842"/>
+                        <rect key="frame" x="0.0" y="0.0" width="414" height="896"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="Results" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Je9-LO-oO4">
@@ -336,7 +336,7 @@
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                 <state key="normal" title="Play Again"/>
                                 <connections>
-                                    <action selector="onPlayAgain:" destination="n14-dg-p2p" eventType="touchUpInside" id="Gtn-5Q-PQR"/>
+                                    <action selector="onPlayAgainButton:" destination="n14-dg-p2p" eventType="touchUpInside" id="YPg-W7-IAA"/>
                                 </connections>
                             </button>
                         </subviews>

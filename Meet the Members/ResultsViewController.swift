@@ -15,9 +15,14 @@ class ResultsViewController: UIViewController {
     
     var finalScore = 0
     var longestStreak = 0
-        override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
-        // Get the new view controller using segue.destination.
-        // Pass the selected object to the new view controller.
+    var totalQuestions = 0
+
+    override func viewDidLoad() {
+        super.viewDidLoad()
+        // Do any additional setup after loading the view.
+        
+        finalScoreLabel.text = "\(finalScore) (\(finalScore)/\(totalQuestions))"
+        longestStreakLabel.text = String(longestStreak)
     }
 
     @IBAction func onPlayAgainButton(_ sender: Any) {
