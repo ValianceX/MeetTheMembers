@@ -44,7 +44,7 @@ class GameScreenViewController: UIViewController {
     }
  
     
-    //user defined variables
+    //MARK: Game Variables
     let nameList = Constants.names //names in the original order
     var gameNameList: [String] = []//the name list we will use for the game
     var totalNames: Int!
@@ -56,6 +56,7 @@ class GameScreenViewController: UIViewController {
     var lastThreeNames: [String] = ["None", "None", "None"]
     var longestStreak = 0
     var currentlyPlaying = false
+    var correctButton: UIButton!
     
     
     func shuffleNames() -> [String] {
@@ -64,6 +65,10 @@ class GameScreenViewController: UIViewController {
 
     func setScoreLabel(_ score: Int) {
         scoreLabel.text = ("Score: " + String(score))
+    }
+    
+    func setLastThreeNames(newName:String) {
+        lastThreeNames = [newName, lastThreeNames[0], lastThreeNames[1]]
     }
     
     func setButtonOptions(_ answer: String) {
@@ -76,16 +81,16 @@ class GameScreenViewController: UIViewController {
         optionButton2.setTitle(buttonTitles[1], for: .normal)
         optionButton3.setTitle(buttonTitles[2], for: .normal)
         optionButton4.setTitle(buttonTitles[3], for: .normal)
+        if optionButton1.title(for: .normal) == answer {correctButton=optionButton1}
+        if optionButton2.title(for: .normal) == answer {correctButton=optionButton2}
+        if optionButton3.title(for: .normal) == answer {correctButton=optionButton3}
+        if optionButton4.title(for: .normal) == answer {correctButton=optionButton4}
         
-    }
-    
-    func setLastThreeNames(newName:String) {
-        lastThreeNames = [newName, lastThreeNames[0], lastThreeNames[1]]
     }
     
     func checkButtonAnswer(answerChoice: String) -> Bool{
         timer.invalidate()
-        time = 5
+        timerLabel.text = String(5)
         if answerChoice == currentlyDisplaying {
             score += 1
             streak += 1
@@ -101,6 +106,7 @@ class GameScreenViewController: UIViewController {
         }
     }
     
+    //MARK: - Next Question
     func nextQuestion(question: Int) {
         time = 5
         setButtonColors()
@@ -147,6 +153,8 @@ class GameScreenViewController: UIViewController {
         optionButton4.backgroundColor = .cyan
     }
     
+    //MARK: - View Did Load
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         
@@ -155,6 +163,8 @@ class GameScreenViewController: UIViewController {
         startGame()
     }
     
+    
+    //MARK: - Overrides
     override func viewDidAppear(_ animated: Bool) {
         print("Running viewDidAppear")
         if currentlyPlaying == false {
@@ -204,6 +214,36 @@ class GameScreenViewController: UIViewController {
         }
     }
     
+    
+    //MARK: - Animations
+    func animateCorrect(correctButton:UIButton) {
+        UIView.animate(withDuration: 1,
+                       delay: 0.0,
+                       options: .curveEaseOut,
+                       animations: {
+                       correctButton.backgroundColor = .green
+                        //self.optionButton1.frame.size.width = 200
+        }, completion: { _ in
+            self.nextQuestion(question: self.questionNumber)
+        })
+    }
+    
+    func animateIncorrect(incorrectButton: UIButton) {
+        UIView.animate(withDuration: 1,
+                       delay: 0.0,
+                       options: .curveEaseOut,
+                       animations: {
+                        self.correctButton.backgroundColor = .green
+                        incorrectButton.backgroundColor = .red
+        }, completion: { _ in
+            self.nextQuestion(question: self.questionNumber)
+        })
+    }
+    
+    
+    //MARK: - Button Actions
+    var correct = false
+    
     @IBAction func onStatButton(_ sender: Any) {
         pauseGame()
         performSegue(withIdentifier: "toStatisticsScreen", sender: self)
@@ -213,33 +253,13 @@ class GameScreenViewController: UIViewController {
         pauseGame()
     }
     
-    var correct = false
-    
-    func animateCorrect(correctButton:UIButton) {
-        UIView.animate(withDuration: 1,
-                       delay: 0.0,
-                       options: .curveEaseOut,
-                       animations: {
-                       correctButton.backgroundColor = .green
-                        //self.optionButton1.frame.size.width = 200
-        }, completion: { _ in
-            //correctButton.backgroundColor = .orange
-            //self.questionNumber += 1
-            self.nextQuestion(question: self.questionNumber)
-        })
-        
-    }
-    
-    
-    
     @IBAction func onButton1(_ sender: Any) {
         correct = checkButtonAnswer(answerChoice: optionButton1.title(for: .normal) ?? "No Name")
         
         if correct {
             animateCorrect(correctButton: optionButton1)
         } else {
-            //self.questionNumber += 1
-            self.nextQuestion(question: questionNumber)
+            animateIncorrect(incorrectButton: optionButton1)
         }
     }
     
@@ -249,8 +269,7 @@ class GameScreenViewController: UIViewController {
         if correct {
             animateCorrect(correctButton: optionButton2)
         } else {
-            //self.questionNumber += 1
-            self.nextQuestion(question: self.questionNumber)
+            animateIncorrect(incorrectButton: optionButton2)
         }
     }
     
@@ -260,8 +279,7 @@ class GameScreenViewController: UIViewController {
         if correct {
             animateCorrect(correctButton: optionButton3)
         } else {
-            //self.questionNumber += 1
-            self.nextQuestion(question: self.questionNumber)
+            animateIncorrect(incorrectButton: optionButton3)
         }
     }
     
@@ -271,8 +289,7 @@ class GameScreenViewController: UIViewController {
         if correct {
             animateCorrect(correctButton: optionButton4)
         } else {
-            //self.questionNumber += 1
-            self.nextQuestion(question: self.questionNumber)
+            animateIncorrect(incorrectButton: optionButton4)
         }
     }
     
