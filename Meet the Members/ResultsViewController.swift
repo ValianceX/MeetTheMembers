@@ -40,7 +40,7 @@ class ResultsViewController: UIViewController {
         playAgainButton.layer.cornerRadius = 20
 
         
-        finalScoreLabel.text = "\(finalScore) (\(finalScore)/\(totalQuestions))"
+        finalScoreLabel.text = "\(finalScore)/\(totalQuestions)"
         longestStreakLabel.text = String(longestStreak)
     }
 
