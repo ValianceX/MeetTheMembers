@@ -181,7 +181,7 @@ class GameScreenViewController: UIViewController {
         print("New game started with startGame()")
         score = 0
         currentlyPlaying = true
-        questionNumber = 0
+        questionNumber = 0 //NEXT QUESTION ADDS ONE
         gameNameList = shuffleNames()
         lastThreeNames = ["None", "None", "None"]
         longestStreak = 0
