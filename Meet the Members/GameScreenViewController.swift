@@ -20,6 +20,23 @@ class GameScreenViewController: UIViewController {
     @IBOutlet weak var pauseButton: UIButton!
     @IBOutlet weak var statisticsButton: UIButton!
     
+    //Color and Image Stuff
+    let mdbDarkBlueColor = UIColor.init(red: 15/255, green: 109/255, blue: 253/255, alpha: 1)
+    let mdbLightBlueColor = UIColor.init(red: 78/255, green: 177/255, blue: 244/255, alpha: 1)
+    let mdbYellowColor = UIColor.init(red: 255/255, green: 219/255, blue: 89/255, alpha: 1)
+    let pauseImage = UIImage(named: "pause.png")
+    let playImage = UIImage(named: "play-button.png")
+    let statsImage = UIImage(named: "statistics.png")
+    
+    func createDiagonalGradientLayer() -> CAGradientLayer {
+        let gradientLayer = CAGradientLayer()
+        gradientLayer.frame = view.bounds
+        gradientLayer.startPoint = CGPoint(x: 0.0, y: 0.0)
+        gradientLayer.endPoint = CGPoint(x: 1.0, y: 1.0)
+        return gradientLayer
+    }
+    
+    
     //Timer stuff
     var time = 5 //5 seconds
     var isPaused = false
@@ -32,14 +49,31 @@ class GameScreenViewController: UIViewController {
     
     
     func pauseGame() {
-        isPaused = !isPaused
-        if isPaused {
+        if isPaused == false {
+            pauseButton.setImage(playImage, for: .normal)
+            isPaused = true
+            print("Pausing game!")
             timer.invalidate()
             pauseButton.setTitle("Play", for: .normal)
             
+            optionButton1.isUserInteractionEnabled = false
+            optionButton2.isUserInteractionEnabled = false
+            optionButton3.isUserInteractionEnabled = false
+            optionButton4.isUserInteractionEnabled = false
+            statisticsButton.isUserInteractionEnabled = false
+            
         } else {
+            print("unpausing game!")
+            pauseButton.setImage(pauseImage, for: .normal)
+            isPaused = false
             startTimer()
             pauseButton.setTitle("Pause", for: .normal)
+            
+            optionButton1.isUserInteractionEnabled = true
+            optionButton2.isUserInteractionEnabled = true
+            optionButton3.isUserInteractionEnabled = true
+            optionButton4.isUserInteractionEnabled = true
+            statisticsButton.isUserInteractionEnabled = true
         }
     }
  
@@ -157,6 +191,14 @@ class GameScreenViewController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        let backgroundColorArray = [mdbDarkBlueColor.cgColor, mdbLightBlueColor.cgColor, UIColor.white.cgColor]
+        let gradientLayer = createDiagonalGradientLayer()
+        gradientLayer.colors = backgroundColorArray
+        self.view.layer.insertSublayer(gradientLayer, at: 0)
+        
+        pauseButton.setImage(pauseImage, for: .normal)
+        statisticsButton.setImage(statsImage, for: .normal)
+        scoreLabel.textColor = mdbYellowColor
         
         // Do any additional setup after loading the view.
         print("Running viewDidLoad")
@@ -171,7 +213,7 @@ class GameScreenViewController: UIViewController {
             print("New game started")
             startGame()
         }
-        if isPaused {
+        if isPaused == true {
             print("Unpaused")
             pauseGame()
         }
@@ -245,11 +287,14 @@ class GameScreenViewController: UIViewController {
     var correct = false
     
     @IBAction func onStatButton(_ sender: Any) {
+        
         pauseGame()
         performSegue(withIdentifier: "toStatisticsScreen", sender: self)
     }
     
     @IBAction func onPauseButton(_ sender: Any) {
+        timer.invalidate()
+        print("Pause button pressed")
         pauseGame()
     }
     
