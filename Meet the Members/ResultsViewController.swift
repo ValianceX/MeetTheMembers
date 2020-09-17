@@ -31,10 +31,13 @@ class ResultsViewController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        let backgroundColorArray = [mdbDarkBlueColor.cgColor, mdbLightBlueColor.cgColor, UIColor.white.cgColor]
         // Do any additional setup after loading the view.
         let gradientLayer = createDiagonalGradientLayer()
-        gradientLayer.colors = [mdbYellowColor, UIColor.white.cgColor]
+        gradientLayer.colors = backgroundColorArray
         self.view.layer.insertSublayer(gradientLayer, at: 0)
+        playAgainButton.backgroundColor = mdbYellowColor
+        playAgainButton.layer.cornerRadius = 20
 
         
         finalScoreLabel.text = "\(finalScore) (\(finalScore)/\(totalQuestions))"

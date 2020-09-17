@@ -47,6 +47,20 @@ class GameScreenViewController: UIViewController {
         timer = Timer.scheduledTimer(timeInterval: 1.0, target: self, selector: #selector(updateTime), userInfo: nil, repeats: true)
     }
     
+    func invalidateButtons() {
+        optionButton1.isUserInteractionEnabled = false
+        optionButton2.isUserInteractionEnabled = false
+        optionButton3.isUserInteractionEnabled = false
+        optionButton4.isUserInteractionEnabled = false
+    }
+    
+    func validateButtons() {
+        optionButton1.isUserInteractionEnabled = true
+        optionButton2.isUserInteractionEnabled = true
+        optionButton3.isUserInteractionEnabled = true
+        optionButton4.isUserInteractionEnabled = true
+    }
+    
     
     func pauseGame() {
         if isPaused == false {
@@ -55,11 +69,8 @@ class GameScreenViewController: UIViewController {
             print("Pausing game!")
             timer.invalidate()
             pauseButton.setTitle("Play", for: .normal)
-            
-            optionButton1.isUserInteractionEnabled = false
-            optionButton2.isUserInteractionEnabled = false
-            optionButton3.isUserInteractionEnabled = false
-            optionButton4.isUserInteractionEnabled = false
+            invalidateButtons()
+
             statisticsButton.isUserInteractionEnabled = false
             
         } else {
@@ -68,11 +79,8 @@ class GameScreenViewController: UIViewController {
             isPaused = false
             startTimer()
             pauseButton.setTitle("Pause", for: .normal)
-            
-            optionButton1.isUserInteractionEnabled = true
-            optionButton2.isUserInteractionEnabled = true
-            optionButton3.isUserInteractionEnabled = true
-            optionButton4.isUserInteractionEnabled = true
+            validateButtons()
+
             statisticsButton.isUserInteractionEnabled = true
         }
     }
@@ -124,6 +132,7 @@ class GameScreenViewController: UIViewController {
     
     func checkButtonAnswer(answerChoice: String) -> Bool{
         timer.invalidate()
+        invalidateButtons()
         timerLabel.text = String(5)
         if answerChoice == currentlyDisplaying {
             score += 1
@@ -145,6 +154,7 @@ class GameScreenViewController: UIViewController {
         time = 5
         setButtonColors()
         questionNumber = question + 1
+        validateButtons()
         //STILL NEED TO HANDLE THE GAME ENDING HERE!!!!!
         if question >= gameNameList.count {
             timer.invalidate()
@@ -181,10 +191,10 @@ class GameScreenViewController: UIViewController {
     
     
     func setButtonColors() {
-        optionButton1.backgroundColor = .orange
-        optionButton2.backgroundColor = .purple
-        optionButton3.backgroundColor = .yellow
-        optionButton4.backgroundColor = .cyan
+        optionButton1.backgroundColor = mdbYellowColor
+        optionButton2.backgroundColor = mdbYellowColor
+        optionButton3.backgroundColor = mdbYellowColor
+        optionButton4.backgroundColor = mdbYellowColor
     }
     
     //MARK: - View Did Load
@@ -199,6 +209,11 @@ class GameScreenViewController: UIViewController {
         pauseButton.setImage(pauseImage, for: .normal)
         statisticsButton.setImage(statsImage, for: .normal)
         scoreLabel.textColor = mdbYellowColor
+        
+        optionButton1.layer.cornerRadius = 20
+        optionButton2.layer.cornerRadius = 20
+        optionButton3.layer.cornerRadius = 20
+        optionButton4.layer.cornerRadius = 20
         
         // Do any additional setup after loading the view.
         print("Running viewDidLoad")
@@ -225,8 +240,8 @@ class GameScreenViewController: UIViewController {
             time -= 1
         }
         if time == -1 {
-            checkButtonAnswer(answerChoice: "No Answer Given")
-            nextQuestion(question: questionNumber)
+            correct = checkButtonAnswer(answerChoice: "No Answer Given")
+            animateIncorrectTimer()
         }
         
     }
@@ -270,6 +285,18 @@ class GameScreenViewController: UIViewController {
         })
     }
     
+    func animateIncorrectTimer() {
+        UIView.animate(withDuration: 1,
+                       delay: 0.0,
+                       options: .curveEaseOut,
+                       animations: {
+                        self.correctButton.backgroundColor = .green
+                        //self.optionButton1.frame.size.width = 200
+        }, completion: { _ in
+            self.nextQuestion(question: self.questionNumber)
+        })
+    }
+    
     func animateIncorrect(incorrectButton: UIButton) {
         UIView.animate(withDuration: 1,
                        delay: 0.0,
@@ -287,7 +314,7 @@ class GameScreenViewController: UIViewController {
     var correct = false
     
     @IBAction func onStatButton(_ sender: Any) {
-        
+        isPaused = false
         pauseGame()
         performSegue(withIdentifier: "toStatisticsScreen", sender: self)
     }
